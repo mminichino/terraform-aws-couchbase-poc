@@ -132,6 +132,25 @@ else
 fi
 }
 
+function get_cb_version {
+local -n return_value=$1
+local PACKAGES=$(curl -s http://packages.couchbase.com/releases/couchbase-server/enterprise/rpm/7/x86_64/repodata/repomd.xml | grep filelists.xml | cut -d\" -f2)
+
+for item in $(curl -s http://packages.couchbase.com/releases/couchbase-server/enterprise/rpm/7/x86_64/$PACKAGES | zcat | grep ver= | awk -F\" '{print $4"-"$6}' | tac | head -10); do
+    result_array+=("$item")
+done
+
+for (( i=0; i<${#result_array[@]}; i++ )); do
+    echo "$i) ${result_array[$i]}"
+done
+
+echo -n "Selection: "
+read INPUT
+
+return_value=${result_array[$INPUT]}
+
+}
+
 host_name_prefix="perfdb"
 gen_name_prefix="perfgen"
 domain_name=""
@@ -204,11 +223,9 @@ get_domain_name domain_name
 
 get_dns_server dns_server
 
-echo -n "sw_version [$sw_version]: "
-read INPUT
-if [ -n "$INPUT" ]; then
-   sw_version=$INPUT
-fi
+echo "Software version:"
+get_cb_version sw_version
+
 echo -n "region_name [$region_name]: "
 read INPUT
 if [ -n "$INPUT" ]; then
@@ -225,6 +242,7 @@ if [ -n "$INPUT" ]; then
    gen_instance_type=$INPUT
 fi
 
+echo "Index storage option:"
 get_index_mem index_memory
 
 echo -n "num_instances [$num_instances]: "
