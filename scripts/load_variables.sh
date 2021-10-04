@@ -172,7 +172,7 @@ vpc_id=""
 security_group_ids=""
 root_volume_iops="0"
 root_volume_size="50"
-root_volume_type="gp2"
+root_volume_type="gp3"
 
 aws s3 ls >/dev/null 2>&1
 if [ $? -ne 0 ]; then
@@ -301,7 +301,7 @@ fi
 echo -n "root_volume_type [$root_volume_type]: "
 read INPUT
 if [ -n "$INPUT" ]; then
-   root_volume_size=$INPUT
+   root_volume_type=$INPUT
 fi
 
 echo ""
@@ -432,17 +432,17 @@ EOF
 for i in $(seq $gen_instances); do
   node_num_str=$(printf "%02d" $i)
   echo "=> Configuring generator $i ..."
-  echo -n "instance_type [$instance_type]: "
+  echo -n "instance_type [$gen_instance_type]: "
   read INPUT
   if [ -n "$INPUT" ]; then
-     instance_type=$INPUT
+     gen_instance_type=$INPUT
   fi
 cat <<EOF >> $TMPFILE
     loadgen-$node_num_str = {
       node_number     = $i,
       node_services   = "docker",
       node_role       = "generator"
-      instance_type   = "${instance_type}",
+      instance_type   = "${gen_instance_type}",
     }
 EOF
 done
