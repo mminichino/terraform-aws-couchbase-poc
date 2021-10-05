@@ -84,7 +84,7 @@ sudo sh -c 'echo "vm.swappiness = 0" >> /etc/sysctl.conf'
 echo "Installng software."
 
 sudo yum install -y epel-release
-sudo yum install -y bzip2 jq git python-pip wget vim-enhanced xmlstarlet java-1.8.0-openjdk maven nc
+sudo yum install -y bzip2 jq git python-pip wget vim-enhanced xmlstarlet java-1.8.0-openjdk maven nc sysstat
 
 sudo yum install -y yum-utils
 sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
@@ -95,6 +95,10 @@ sudo usermod -a -G docker admin
 
 sudo systemctl start docker
 sudo systemctl enable docker
+
+sudo mkdir /home/admin/bin
+sudo git clone https://github.com/mminichino/perf-lab-bin /home/admin/bin
+sudo chown -R admin:admin /home/admin/bin
 
 echo "Process Complete."
 exit 0
