@@ -238,6 +238,10 @@ resource "aws_lb_target_group_attachment" "tga_https" {
 }
 
 resource "null_resource" "prep-hosts" {
+  triggers = {
+    cb_nodes = join(",", keys(aws_instance.couchbase_nodes))
+    gen_nodes = join(",", keys(aws_instance.generator_nodes))
+  }
   provisioner "local-exec" {
     command = "${path.module}/scripts/awsrun.sh ansible-helper.py prep-db-host.yaml -S -h inventory.py --dnsonly true --user_name centos --domain ${var.domain_name} --dnsserver ${var.dns_server}"
     environment = {
@@ -248,6 +252,10 @@ resource "null_resource" "prep-hosts" {
 }
 
 resource "null_resource" "couchbase-init" {
+  triggers = {
+    cb_nodes = join(",", keys(aws_instance.couchbase_nodes))
+    gen_nodes = join(",", keys(aws_instance.generator_nodes))
+  }
   provisioner "local-exec" {
     command = "${path.module}/scripts/awsrun.sh ansible-helper.py couchbase-init.yaml -S -h inventory.py --memopt ${var.index_memory} --domain ${var.domain_name}"
     environment = {
