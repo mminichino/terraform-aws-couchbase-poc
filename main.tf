@@ -62,8 +62,8 @@ resource "aws_instance" "couchbase_nodes" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/scripts/host_prep.sh"
-    destination = "/home/${var.ssh_user}/host_prep.sh"
+    source      = "${path.module}/scripts/callhostprep.sh"
+    destination = "/home/${var.ssh_user}/callhostprep.sh"
     connection {
       host        = self.private_ip
       type        = "ssh"
@@ -74,8 +74,8 @@ resource "aws_instance" "couchbase_nodes" {
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /home/${var.ssh_user}/host_prep.sh",
-      "/home/${var.ssh_user}/host_prep.sh '${var.sw_version}'",
+      "chmod +x /home/${var.ssh_user}/callhostprep.sh",
+      "/home/${var.ssh_user}/callhostprep.sh -t cbnode -h ${each.key}-${random_id.labid.hex} -d ${var.domain_name} -n ${var.dns_server} -v ${var.sw_version}",
     ]
     connection {
       host        = self.private_ip
@@ -109,8 +109,8 @@ resource "aws_instance" "generator_nodes" {
   }
 
   provisioner "file" {
-    source      = "${path.module}/scripts/gen_host_prep.sh"
-    destination = "/home/${var.ssh_user}/gen_host_prep.sh"
+    source      = "${path.module}/scripts/callhostprep.sh"
+    destination = "/home/${var.ssh_user}/callhostprep.sh"
     connection {
       host        = self.private_ip
       type        = "ssh"
@@ -121,8 +121,8 @@ resource "aws_instance" "generator_nodes" {
 
   provisioner "remote-exec" {
     inline = [
-      "chmod +x /home/${var.ssh_user}/gen_host_prep.sh",
-      "/home/${var.ssh_user}/gen_host_prep.sh",
+      "chmod +x /home/${var.ssh_user}/callhostprep.sh",
+      "/home/${var.ssh_user}/callhostprep.sh -t generic -h ${each.key}-${random_id.labid.hex} -d ${var.domain_name} -n ${var.dns_server}",
     ]
     connection {
       host        = self.private_ip
