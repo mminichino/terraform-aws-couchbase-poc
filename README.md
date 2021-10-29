@@ -18,7 +18,7 @@ Utilities for deploying a Couchbase environment for testing.
 You can run a container with all the lab automation utilities preloaded. It has its own isolated DNS server that allows dynamic updates. All that is needed is a system with Docker (that is not running another DNS server).
 1. Get control utility
 ````
-$ curl https://github.com/mminichino/perfctl-container/releases/download/v1.0.0/run-perfctl.sh -O -L
+$ curl https://github.com/mminichino/perfctl-container/releases/latest/download/run-perfctl.sh -L -O
 ````
 2. Run container
 ````
